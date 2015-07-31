@@ -21,7 +21,7 @@ func (th *TodoHandler) Get(c *gin.Context) {
     if(err == nil){
 		c.JSON(200, todo)
 	} else {
-		c.JSON(404, gin.H{"error:": "Todo not found"})
+		c.JSON(404, models.Status{Success: false, Msg: "Error: Todo not found."})
 	}
 }
 
@@ -29,11 +29,10 @@ func (th *TodoHandler) Create(c *gin.Context) {
 	var todo models.Todo
 
 	if (c.BindJSON(&todo) == nil) {
-		//check bool
 		th.Db.Insert(&todo)
-		c.JSON(200,gin.H{"status": "Todo created"})
+		c.JSON(200, models.Status{Success: true, Msg: "Todo created."})
 	} else {
-		c.JSON(500, gin.H{"error:": "Creating todo"})
+		c.JSON(500, models.Status{Success: false, Msg: "Error: Missing required fields."})
 	}
 }
 
@@ -42,11 +41,13 @@ func (th *TodoHandler) Update(c *gin.Context) {
 	var todo models.Todo
 
 	if (c.BindJSON(&todo) == nil) {
-		//check bool
-		th.Db.Update(id, &todo)
-		c.JSON(200,gin.H{"status": "Todo updated"})
+		if (th.Db.Update(id, &todo)) {
+			c.JSON(200, models.Status{Success: true, Msg: "Todo updated."})
+		} else {
+			c.JSON(500, models.Status{Success: false, Msg: "Error: Updating Todo."})
+		}
 	} else {
-		c.JSON(500, gin.H{"error:": "Updating todo"})
+		c.JSON(500, models.Status{Success: false, Msg: "Error: Missing required fields."})
 	}
 }
 
@@ -54,8 +55,8 @@ func (th *TodoHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	if (th.Db.Delete(id)) {
-		c.JSON(200,gin.H{"status": "Todo deleted"})
+		c.JSON(200, models.Status{Success: true, Msg: "Todo updated."})
 	} else {
-		c.JSON(404, gin.H{"error:": "Todo not found"})
+		c.JSON(404, models.Status{Success: false, Msg: "Error: Todo not found."})
 	}
 }

@@ -13,7 +13,7 @@ type TodoDb struct {
 func (td *TodoDb) Open() {
 	td.Db, _ = gorm.Open("sqlite3", "../database/todo.db")
 	td.Db.LogMode(true)
-    //td.db.AutoMigrate(&models.Todo{})
+    td.Db.AutoMigrate(&Todo{})
 }
 
 func (td *TodoDb) GetAll() Todos {

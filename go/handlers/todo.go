@@ -1,30 +1,27 @@
 package handlers
 
 import (
+	"strconv"
 	"github.com/nunows/todo-api/go/models"
     "github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 type TodoHandler struct {
-	Db gorm.DB
+	Db models.TodoDb
 }
 
 func (th *TodoHandler) GetAll(c *gin.Context) {
-	var todos models.Todos
-    th.Db.Find(&todos)
-    c.JSON(200, todos)
+    c.JSON(200, th.Db.GetAll())
 }
 
 func (th *TodoHandler) Get(c *gin.Context) {
-	id := c.Param("id")
-	var todo models.Todo
+	id, _ := strconv.Atoi(c.Param("id"))
+	todo, err := th.Db.Get(id)
 
-	if (th.Db.First(&todo, id).RecordNotFound()) {
-		c.JSON(404, gin.H{"error:": "Todo not found"})
-	} else {
+    if(err == nil){
 		c.JSON(200, todo)
+	} else {
+		c.JSON(404, gin.H{"error:": "Todo not found"})
 	}
 }
 
@@ -32,7 +29,8 @@ func (th *TodoHandler) Create(c *gin.Context) {
 	var todo models.Todo
 
 	if (c.BindJSON(&todo) == nil) {
-		th.Db.Create(&todo)
+		//check bool
+		th.Db.Insert(&todo)
 		c.JSON(200,gin.H{"status": "Todo created"})
 	} else {
 		c.JSON(500, gin.H{"error:": "Creating todo"})
@@ -40,32 +38,24 @@ func (th *TodoHandler) Create(c *gin.Context) {
 }
 
 func (th *TodoHandler) Update(c *gin.Context) {
-	id := c.Param("id")
-	var todoDb models.Todo
+	id, _ := strconv.Atoi(c.Param("id"))
 	var todo models.Todo
 
-	if (th.Db.First(&todoDb, id).RecordNotFound()) {
-		c.JSON(404, gin.H{"error:": "Todo not found"})
+	if (c.BindJSON(&todo) == nil) {
+		//check bool
+		th.Db.Update(id, &todo)
+		c.JSON(200,gin.H{"status": "Todo updated"})
 	} else {
-		if (c.BindJSON(&todo) == nil) {
-			todoDb.Name = todo.Name
-			todoDb.Done = todo.Done
-			th.Db.Save(&todoDb)
-			c.JSON(200,gin.H{"status": "Todo updated"})
-		} else {
-			c.JSON(500, gin.H{"error:": "Updating todo"})
-		}
+		c.JSON(500, gin.H{"error:": "Updating todo"})
 	}
 }
 
 func (th *TodoHandler) Delete(c *gin.Context) {
-	id := c.Param("id")
-	var todo models.Todo
+	id, _ := strconv.Atoi(c.Param("id"))
 
-	if (th.Db.First(&todo, id).RecordNotFound()) {
-		c.JSON(404, gin.H{"error:": "Todo not found"})
-	} else {
-		th.Db.Delete(&todo)
+	if (th.Db.Delete(id)) {
 		c.JSON(200,gin.H{"status": "Todo deleted"})
+	} else {
+		c.JSON(404, gin.H{"error:": "Todo not found"})
 	}
 }

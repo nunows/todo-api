@@ -3,7 +3,7 @@ package handlers
 import (
 	"strconv"
 	"github.com/nunows/todo-api/go/models"
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 )
 
 type TodoHandler struct {
@@ -11,14 +11,14 @@ type TodoHandler struct {
 }
 
 func (th *TodoHandler) GetAll(c *gin.Context) {
-    c.JSON(200, th.Db.GetAll())
+	c.JSON(200, th.Db.GetAll())
 }
 
 func (th *TodoHandler) Get(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	todo, err := th.Db.Get(id)
 
-    if(err == nil){
+    	if(err == nil){
 		c.JSON(200, todo)
 	} else {
 		c.JSON(404, models.Status{Success: false, Msg: "Error: Todo not found."})

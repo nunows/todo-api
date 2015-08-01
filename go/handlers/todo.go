@@ -11,7 +11,12 @@ type TodoHandler struct {
 }
 
 func (th *TodoHandler) GetAll(c *gin.Context) {
-	c.JSON(200, th.Db.GetAll())
+	todos := th.Db.GetAll()
+	if len(todos) > 0 {
+		c.JSON(200, todos)
+	} else {
+		c.JSON(404, models.Status{Success: false, Msg: "Error: Empty."})
+	}
 }
 
 func (th *TodoHandler) Get(c *gin.Context) {

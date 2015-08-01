@@ -1,0 +1,24 @@
+{
+  "name": "todo-api",
+  "version": "1.0.0",
+  "description": "Yet Another Todo App - RESTful JSON API in Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "n/a"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nunows/todo-api/nodejs"
+  },
+  "keywords": [
+    "nodejs",
+    "api",
+    "todo",
+    "hapi"
+  ],
+  "author": "Nuno Guedes Silva",
+  "license": "MIT",
+  "dependencies": {
+    "hapi": "^8.8.1"
+  }
+}

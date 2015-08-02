@@ -19,6 +19,8 @@
   "author": "Nuno Guedes Silva",
   "license": "MIT",
   "dependencies": {
-    "hapi": "^8.8.1"
+    "hapi": "^8.8.1",
+    "sequelize": "^3.5.1",
+    "sqlite3": "^3.0.9"
   }
 }

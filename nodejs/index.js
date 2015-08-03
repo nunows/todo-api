@@ -4,8 +4,7 @@ var handlers = require('./handlers/todo');
 var server = new Hapi.Server();
 
 server.route({
-    method: 'GET',
-    path: '/todo/',
+    method: 'GET',    path: '/todo/',
     config: handlers.getAll
 });
 

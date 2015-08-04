@@ -2,6 +2,7 @@ var Hapi = require('hapi');
 var handlers = require('./handlers/todo');
 
 var server = new Hapi.Server();
+server.connection({port:8080});
 
 server.route({
     method: 'GET',
@@ -34,7 +35,7 @@ server.route({
 });
 
 
-server.connection({port:8080});
+
 server.start(function () {
     console.log('Server running at:', server.info.uri);
 });

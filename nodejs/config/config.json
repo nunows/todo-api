@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "",
+    "password": null,
+    "database": "todo_development",
+    "host": "",
+    "dialect": "sqlite",
+    "storage": "../database/todo.sqlite"
+  },
+  "test": {
+    "username": "",
+    "password": null,
+    "database": "todo_test",
+    "host": "",
+    "dialect": "sqlite",
+    "storage": "../database/todo.sqlite"
+  },
+  "production": {
+    "username": "",
+    "password": null,
+    "database": "todo_production",
+    "host": "",
+    "dialect": "sqlite",
+    "storage": "../database/todo.sqlite"
+  }
+}

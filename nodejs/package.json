@@ -22,5 +22,8 @@
     "hapi": "^8.8.1",
     "sequelize": "^3.5.1",
     "sqlite3": "^3.0.9"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^1.7.4"
   }
 }

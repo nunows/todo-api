@@ -17,6 +17,7 @@ RESTful JSON API in
 
 * Endpoint /todo/ (GET,POST,PUT,DELETE)
 * Basic CRUD
+* Basic request/model's validation
 
 ### v2
 

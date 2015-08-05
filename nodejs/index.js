@@ -4,9 +4,7 @@ var models = require('./models');
 
 var server = new Hapi.Server();
 server.connection({port:8080});
-
 server.route(routes);
-
 
 models.sequelize.sync().then(function() {
     console.log('db sync');

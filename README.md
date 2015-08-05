@@ -4,7 +4,7 @@ Yet Another Todo App - API
 RESTful JSON API in
 
 * Go (v1 - Done)
-* Node.js (work in progress)
+* Node.js (v1 - Done)
 * C#
 * Ruby
 * Python

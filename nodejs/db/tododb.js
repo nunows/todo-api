@@ -4,7 +4,7 @@ module.exports = {
     getAll: function(callback) {
         models.Todo.findAll().then(function(todos) {
             if(todos){
-                callback(JSON.stringify(todos));
+                callback(todos);
             } else {
                 callback(false);
             }
@@ -19,7 +19,7 @@ module.exports = {
             }
         });
     },
-    create: function(todo, callback) {
+    insert: function(todo, callback) {
         models.Todo.create({
             name: todo.name,
             done: todo.done

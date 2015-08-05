@@ -21,6 +21,7 @@
     "database": "todo_production",
     "host": "",
     "dialect": "sqlite",
-    "storage": "../database/todo.sqlite"
+    "storage": "../database/todo.sqlite",
+    "logging": false
   }
 }

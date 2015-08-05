@@ -1,5 +1,6 @@
 var Hapi = require('hapi');
 var handlers = require('./handlers/todo');
+var models = require('./models');
 
 var server = new Hapi.Server();
 server.connection({port:8080});
@@ -35,7 +36,10 @@ server.route({
 });
 
 
+models.sequelize.sync().then(function() {
+    console.log('db sync');
 
-server.start(function () {
-    console.log('Server running at:', server.info.uri);
+    server.start(function () {
+        console.log('Server running at:', server.info.uri);
+    });
 });

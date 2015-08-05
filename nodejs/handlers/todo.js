@@ -1,15 +1,29 @@
 var Joi = require('joi');
 
+var tododb = require('../db/tododb');
+
 module.exports = {
     getAll: {
         handler: function(request, reply) {
-            reply('getAll');
+            tododb.getAll(function(data) {
+                if(data){
+                    reply(data);
+                } else {
+                    reply({"success": false, "msg": "Error: Empty."});
+                }
+            });
         }
     },
     get: {
         handler: function(request, reply) {
             id = request.params.id;
-            reply('get' + id);
+            tododb.get(id, function(data) {
+                if(data){
+                    reply(data);
+                } else {
+                    reply({"success": false, "msg": "Error: Todo not found."});
+                }
+            });
         }, validate: {
             params: { id: Joi.number().integer().min(1) }
         }
@@ -20,7 +34,11 @@ module.exports = {
                 name: request.payload.name,
                 done: request.payload.done
             };
-            reply('create' + todo);
+
+            tododb.insert(todo, function(data) {
+                reply({"success": true, "msg": "Todo created."});
+            });
+
         }, validate: {
             payload: {
                 name: Joi.string().required(),
@@ -30,11 +48,18 @@ module.exports = {
     },
     update: {
         handler: function(request, reply) {
+            id = request.params.id;
             var todo = {
                 name: request.payload.name,
                 done: request.payload.done
             };
-            reply('update' + todo);
+            tododb.update(id, todo, function(data) {
+                if(data){
+                    reply({"success": true, "msg": "Todo updated."});
+                } else {
+                    reply({"success": false, "msg": "Error: Updating Todo."});
+                }
+            });
         }, validate: {
             params: { id: Joi.number().integer().min(1) },
             payload: {
@@ -45,9 +70,16 @@ module.exports = {
     },
     delete: {
         handler:function(request, reply) {
-            reply('delete');
+            id = request.params.id;
+            tododb.delete(id, function(data) {
+                if(data){
+                    reply({"success": true, "msg": "Todo deleted."});
+                } else {
+                    reply({"success": false, "msg": "Error: Deleting Todo."});
+                }
+            });
         }, validate: {
             params: { id: Joi.number().integer().min(1) }
         }
-    },
+    }
 };

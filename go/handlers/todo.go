@@ -1,9 +1,10 @@
 package handlers
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/nunows/todo-api/go/models"
-	"strconv"
 )
 
 type TodoHandler struct {
@@ -12,11 +13,7 @@ type TodoHandler struct {
 
 func (th *TodoHandler) GetAll(c *gin.Context) {
 	todos := th.Db.GetAll()
-	if len(todos) > 0 {
-		c.JSON(200, todos)
-	} else {
-		c.JSON(404, models.Status{Success: false, Msg: "Error: Empty."})
-	}
+	c.JSON(200, todos)
 }
 
 func (th *TodoHandler) Get(c *gin.Context) {

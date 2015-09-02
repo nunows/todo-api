@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/nunows/todo-api/go/handlers"
 	"github.com/nunows/todo-api/go/models"
@@ -9,7 +11,10 @@ import (
 func main() {
 
 	db := new(models.TodoDb)
-	db.Open()
+	err := db.Open("../database/todo.db")
+	if err != nil {
+		log.Fatalln("failed to open database:", err)
+	}
 
 	th := handlers.TodoHandler{Db: *db}
 

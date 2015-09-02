@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -10,10 +11,15 @@ type TodoDb struct {
 	Db gorm.DB
 }
 
-func (td *TodoDb) Open() {
-	td.Db, _ = gorm.Open("sqlite3", "../database/todo.db")
+func (td *TodoDb) Open(dbpath string) error {
+	var err error
+	td.Db, err = gorm.Open("sqlite3", dbpath)
+	if err != nil {
+		return err
+	}
 	td.Db.LogMode(true)
 	td.Db.AutoMigrate(&Todo{})
+	return nil
 }
 
 func (td *TodoDb) GetAll() Todos {

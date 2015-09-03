@@ -7,58 +7,91 @@ import (
 	"github.com/nunows/todo-api/go/models"
 )
 
+//Common web error
+var (
+	invalidParamMsg = models.Status{Success: false, Msg: "Error: Invalid Parameter."}
+	missingParamMsg = models.Status{Success: false, Msg: "Error: Missing required Parameter."}
+	notFoundMsg     = models.Status{Success: false, Msg: "Error: Not found."}
+)
+
 type TodoHandler struct {
 	Db models.TodoDb
 }
 
 func (th *TodoHandler) GetAll(c *gin.Context) {
-	todos := th.Db.GetAll()
+	todos, err := th.Db.GetAll()
+	if err != nil {
+		c.JSON(500, models.Status{Success: false, Msg: err.Error()})
+		return
+	}
 	c.JSON(200, todos)
 }
 
 func (th *TodoHandler) Get(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	todo, err := th.Db.Get(id)
-
-	if err == nil {
-		c.JSON(200, todo)
-	} else {
-		c.JSON(404, models.Status{Success: false, Msg: "Error: Todo not found."})
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, invalidParamMsg)
+		return
 	}
+
+	todo, err := th.Db.Get(id)
+	if err != nil {
+		c.JSON(404, notFoundMsg)
+	} else {
+		c.JSON(200, todo)
+	}
+
 }
 
 func (th *TodoHandler) Create(c *gin.Context) {
 	var todo models.Todo
-
-	if c.BindJSON(&todo) == nil {
-		th.Db.Insert(&todo)
-		c.JSON(200, models.Status{Success: true, Msg: "Todo created."})
+	err := c.BindJSON(&todo)
+	if err != nil {
+		c.JSON(500, missingParamMsg)
+		return
+	}
+	err = th.Db.Insert(&todo)
+	if err != nil {
+		c.JSON(500, models.Status{Success: false, Msg: err.Error()})
 	} else {
-		c.JSON(500, models.Status{Success: false, Msg: "Error: Missing required fields."})
+		c.JSON(200, models.Status{Success: true, Msg: "Todo created."})
 	}
 }
 
 func (th *TodoHandler) Update(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, invalidParamMsg)
+		return
+	}
 	var todo models.Todo
 
-	if c.BindJSON(&todo) == nil {
-		if th.Db.Update(id, &todo) {
-			c.JSON(200, models.Status{Success: true, Msg: "Todo updated."})
-		} else {
-			c.JSON(500, models.Status{Success: false, Msg: "Error: Updating Todo."})
-		}
+	err = c.BindJSON(&todo)
+	if err != nil {
+		c.JSON(500, missingParamMsg)
+		return
+	}
+
+	err = th.Db.Update(id, &todo)
+	if err != nil {
+		c.JSON(500, models.Status{Success: false, Msg: err.Error()})
 	} else {
-		c.JSON(500, models.Status{Success: false, Msg: "Error: Missing required fields."})
+		c.JSON(200, models.Status{Success: true, Msg: "Todo updated."})
 	}
 }
 
 func (th *TodoHandler) Delete(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-
-	if th.Db.Delete(id) {
-		c.JSON(200, models.Status{Success: true, Msg: "Todo updated."})
-	} else {
-		c.JSON(404, models.Status{Success: false, Msg: "Error: Todo not found."})
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, invalidParamMsg)
+		return
 	}
+
+	err = th.Db.Delete(id)
+	if err != nil {
+		c.JSON(404, models.Status{Success: false, Msg: err.Error()})
+	} else {
+		c.JSON(200, models.Status{Success: true, Msg: "Todo updated."})
+	}
+
 }
